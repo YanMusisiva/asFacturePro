@@ -30,7 +30,7 @@ export default function ModelesFactureScreen() {
 
   const handleSelectModele = async (modele: number) => {
     if (!entreprise || !facture) {
-      Alert.alert("Erreur", "Aucune donnée à envoyer.");
+      Alert.alert("Erreur", "donnees d'entreprise manquantes.");
       return;
     }
     // Ajoute la facture envoyée dans le tableau "facturesEnvoyees"
