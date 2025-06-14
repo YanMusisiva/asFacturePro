@@ -1,17 +1,18 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import AppMenu from "@/components/AppMenu";
 import CustomHeader from "@/components/CustomHeader";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useState } from "react";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -19,16 +20,38 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+  const [checkingUser, setCheckingUser] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = await AsyncStorage.getItem("user");
+      if (!user && pathname !== "/register") {
+        router.replace("/register");
+      }
+      setCheckingUser(false);
+    };
+    checkUser();
+  }, [pathname]);
+
+  if (!loaded || checkingUser) {
+    // Affiche un écran de chargement propre
+    return <StatusBar style="auto" />;
   }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <CustomHeader onOpenMenu={() => setMenuVisible(true)} />
-      <AppMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
+      {/* Affiche la navigation seulement si on n'est pas sur /register */}
+      {pathname !== "/register" && (
+        <>
+          <CustomHeader onOpenMenu={() => setMenuVisible(true)} />
+          <AppMenu
+            visible={menuVisible}
+            onClose={() => setMenuVisible(false)}
+          />
+        </>
+      )}
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -43,9 +66,8 @@ export default function RootLayout() {
           name="modeles-facture"
           options={{ title: "Modèles de facture" }}
         />
-
         <Stack.Screen name="facture-share" options={{ title: "Envoie reçu" }} />
-
+        <Stack.Screen name="register" options={{ title: "Inscription" }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

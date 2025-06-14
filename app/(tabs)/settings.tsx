@@ -4,9 +4,8 @@ import { Alert, Button, StyleSheet, View } from "react-native";
 
 export default function SettingsScreen() {
   const handleLogout = async () => {
-    // Supprimer les données utilisateur et d'entreprise
-    await AsyncStorage.removeItem("user");
-    await AsyncStorage.removeItem("entreprise"); // Ajout pour supprimer les données d'entreprise
+    // Supprimer toutes les données de l'AsyncStorage
+    await AsyncStorage.clear();
     Alert.alert("Déconnexion", "Vous avez été déconnecté.");
     router.replace("/"); // Redirige vers la page d'accueil
   };

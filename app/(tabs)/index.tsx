@@ -8,11 +8,9 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Button,
   Image,
   StyleSheet,
-  TextInput,
   View,
 } from "react-native";
 
@@ -30,9 +28,6 @@ type RootStackParamList = {
 
 export default function HomeScreen() {
   const [user, setUser] = useState<User | null>(null);
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [hasEntreprise, setHasEntreprise] = useState(false);
 
@@ -71,51 +66,11 @@ export default function HomeScreen() {
       });
   }, [navigation]);
 
-  const handleRegister = async () => {
-    if (!email || !name || !phone) {
-      Alert.alert("Erreur", "Tous les champs sont obligatoires.");
-      return;
-    }
-    const newUser = { email, name, phone };
-    await AsyncStorage.setItem("user", JSON.stringify(newUser));
-    setUser(newUser);
-  };
-
   if (isLoading) {
     return (
       <View style={styles.centered}>
         <Image source={require("@/assets/icon.png")} style={styles.reactLogo} />
         <ActivityIndicator size="large" color="#1D3D47" />
-      </View>
-    );
-  }
-
-  if (!user) {
-    return (
-      <View style={styles.centered}>
-        <Image source={require("@/assets/icon.png")} style={styles.reactLogo} />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Nom"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Téléphone"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-        />
-        <Button title="S'inscrire" onPress={handleRegister} />
       </View>
     );
   }
@@ -164,16 +119,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#A1CEDC",
-  },
-  input: {
-    width: 250,
-    height: 40,
-    borderColor: "#1D3D47",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
   },
   titleContainer: {
     flexDirection: "row",
