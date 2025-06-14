@@ -1,5 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -10,9 +11,8 @@ export default function TotalScreen() {
 
   useEffect(() => {
     const fetchFactures = async () => {
-      const facturesEnvoyeesRaw = await AsyncStorage.getItem(
-        "facturesEnvoyees"
-      );
+      const facturesEnvoyeesRaw =
+        await AsyncStorage.getItem("facturesEnvoyees");
       const facturesEnvoyees = facturesEnvoyeesRaw
         ? JSON.parse(facturesEnvoyeesRaw)
         : [];
@@ -28,17 +28,23 @@ export default function TotalScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title" style={{ marginBottom: 16 }}>
+      {/* Espace pour la navigation */}
+      <View style={styles.navigationPlaceholder} />
+
+      <ThemedText type="title" style={styles.title}>
         Total des factures envoyées
       </ThemedText>
       <ThemedText style={styles.total}>Montant total : {total} €</ThemedText>
-      <ScrollView style={{ marginTop: 24 }}>
+      <ScrollView style={styles.scrollView}>
         {factures.length === 0 ? (
-          <ThemedText>Aucune facture envoyée.</ThemedText>
+          <ThemedText style={styles.noFactures}>
+            Aucune facture envoyée.
+          </ThemedText>
         ) : (
           factures.map((f, idx) => (
             <View key={idx} style={styles.factureItem}>
-              <ThemedText>
+              <MaterialIcons name="assignment" size={24} color="#333" />
+              <ThemedText style={styles.factureText}>
                 Client : {f.client} | Produit : {f.produit} | Montant :{" "}
                 {f.montant} €
               </ThemedText>
@@ -56,16 +62,43 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: "#A1CEDC",
   },
+  navigationPlaceholder: {
+    height: 60, // Hauteur de la barre de navigation
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 24,
+    marginBottom: 16,
+    textAlign: "center",
+    color: "#2A2A2A",
+  },
   total: {
     fontWeight: "bold",
     fontSize: 20,
-    marginBottom: 8,
+    marginBottom: 16,
+    textAlign: "center",
+    color: "#2A2A2A",
+  },
+  scrollView: {
+    marginTop: 24,
+  },
+  noFactures: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#555",
   },
   factureItem: {
     backgroundColor: "#fff",
     borderRadius: 8,
-    padding: 12,
+    padding: 16,
     marginBottom: 12,
-    elevation: 1,
+    elevation: 3,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  factureText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: "#333",
   },
 });

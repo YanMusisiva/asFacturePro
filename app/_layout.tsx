@@ -8,10 +8,14 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
+import AppMenu from "@/components/AppMenu";
+import CustomHeader from "@/components/CustomHeader";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useState } from "react";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [menuVisible, setMenuVisible] = useState(false);
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -23,6 +27,8 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <CustomHeader onOpenMenu={() => setMenuVisible(true)} />
+      <AppMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
