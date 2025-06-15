@@ -5,6 +5,9 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   TextInput,
   View,
@@ -28,47 +31,66 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        placeholder="Nom"
-        value={name}
-        onChangeText={setName}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-      />
-      <TextInput
-        placeholder="Téléphone"
-        value={phone}
-        onChangeText={setPhone}
-        style={styles.input}
-        keyboardType="phone-pad"
-      />
-      {loading ? (
-        <ActivityIndicator size="large" color="#1D3D47" />
-      ) : (
-        <Button title="S'inscrire" onPress={handleRegister} color="#1D3D47" />
-      )}
-    </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: "#A1CEDC" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.formContainer}>
+          <TextInput
+            placeholder="Nom"
+            value={name}
+            onChangeText={setName}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            keyboardType="email-address"
+          />
+          <TextInput
+            placeholder="Téléphone"
+            value={phone}
+            onChangeText={setPhone}
+            style={styles.input}
+            keyboardType="phone-pad"
+          />
+          {loading ? (
+            <ActivityIndicator size="large" color="#1D3D47" />
+          ) : (
+            <Button
+              title="S'inscrire"
+              onPress={handleRegister}
+              color="#1D3D47"
+            />
+          )}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#A1CEDC",
     padding: 24,
   },
-  input: {
+  formContainer: {
     width: "100%",
     maxWidth: 350,
+    alignItems: "center",
+  },
+  input: {
+    width: "100%",
     height: 44,
     borderColor: "#1D3D47",
     borderWidth: 1,

@@ -22,8 +22,19 @@ export default function AppMenu({
   visible: boolean;
   onClose: () => void;
 }) {
-  const handleRate = () => {
-    Linking.openURL("https://play.google.com/store/apps/details?id=ton.app.id");
+  const handleRate = async () => {
+    const url = "https://play.google.com/store/apps/details?id=ton.app.id";
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        Alert.alert("Erreur", "Impossible d'ouvrir le lien.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'ouverture du lien :", error);
+      Alert.alert("Erreur", "Une erreur s'est produite.");
+    }
   };
 
   const handleQuit = () => {
@@ -32,7 +43,16 @@ export default function AppMenu({
       {
         text: "Quitter",
         style: "destructive",
-        onPress: () => BackHandler.exitApp(),
+        onPress: () => {
+          try {
+            BackHandler.exitApp();
+          } catch (error) {
+            console.error(
+              "Erreur lors de la fermeture de l'application :",
+              error
+            );
+          }
+        },
       },
     ]);
   };
@@ -98,7 +118,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
-    marginTop: 0,
     elevation: 6,
     height: "100%",
   },

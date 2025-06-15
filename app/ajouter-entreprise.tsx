@@ -1,13 +1,15 @@
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Button,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   TextInput,
   View,
@@ -18,7 +20,6 @@ export default function AjouterEntrepriseScreen() {
   const [adresse, setAdresse] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
 
-  // Demande la permission d'accès à la galerie au montage du composant
   useEffect(() => {
     (async () => {
       const { status } =
@@ -46,12 +47,16 @@ export default function AjouterEntrepriseScreen() {
     }
   };
 
-  const handleSave = async () => {
-    // Validation des champs
+  const validateFields = () => {
     if (!nom.trim() || !adresse.trim() || !imageUri) {
       Alert.alert("Erreur", "Tous les champs sont obligatoires.");
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const handleSave = useCallback(async () => {
+    if (!validateFields()) return;
 
     const entreprise = { nom, adresse, imageUri };
 
@@ -61,48 +66,62 @@ export default function AjouterEntrepriseScreen() {
       router.back();
     } catch (error) {
       Alert.alert("Erreur", "Une erreur s'est produite lors de la sauvegarde.");
+      console.error("Erreur de sauvegarde:", error);
     }
-  };
+  }, [nom, adresse, imageUri]);
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Ajouter les données d'entreprise
-      </ThemedText>
-      <TextInput
-        style={styles.input}
-        placeholder="Nom de l'entreprise"
-        value={nom}
-        onChangeText={setNom}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Adresse de l'entreprise"
-        value={adresse}
-        onChangeText={setAdresse}
-      />
-      <Button
-        title="Choisir une icône (image)"
-        onPress={pickImage}
-        color="#007AFF"
-      />
-      {imageUri && (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.image}
-          resizeMode="cover"
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: "#A1CEDC" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <ThemedText type="title" style={styles.title}>
+          Ajouter les données d'entreprise
+        </ThemedText>
+        <TextInput
+          style={styles.input}
+          placeholder="Nom de l'entreprise"
+          value={nom}
+          onChangeText={setNom}
+          accessibilityLabel="Nom de l'entreprise"
         />
-      )}
-      <View style={styles.buttonContainer}>
-        <Button title="Enregistrer" onPress={handleSave} color="#34A853" />
-      </View>
-    </ThemedView>
+        <TextInput
+          style={styles.input}
+          placeholder="Adresse de l'entreprise"
+          value={adresse}
+          onChangeText={setAdresse}
+          accessibilityLabel="Adresse de l'entreprise"
+        />
+        <Button
+          title="Choisir une icône (image)"
+          onPress={pickImage}
+          color="#007AFF"
+          accessibilityLabel="Choisir une image"
+        />
+        {imageUri && (
+          <Image
+            source={{ uri: imageUri }}
+            style={styles.image}
+            resizeMode="cover"
+            accessibilityLabel="Aperçu de l'image sélectionnée"
+          />
+        )}
+        <View style={styles.buttonContainer}>
+          <Button title="Enregistrer" onPress={handleSave} color="#34A853" />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#A1CEDC",
     alignItems: "center",
     justifyContent: "center",
