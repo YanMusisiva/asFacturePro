@@ -8,9 +8,9 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   Image,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -33,7 +33,6 @@ export default function HomeScreen() {
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // Recharge l'utilisateur à chaque focus (utile après déconnexion)
   useFocusEffect(
     useCallback(() => {
       const loadUser = async () => {
@@ -55,14 +54,19 @@ export default function HomeScreen() {
     navigation.setOptions &&
       navigation.setOptions({
         headerRight: () => (
-          <Ionicons
-            name="settings-outline"
-            size={28}
-            color="#1D3D47"
-            style={{ marginRight: 16 }}
+          <TouchableOpacity
             onPress={() => navigation.navigate("SettingsScreen")}
-          />
+            style={styles.headerIcon}
+            accessibilityLabel="Paramètres"
+          >
+            <Ionicons name="settings-outline" size={28} color="#007AFF" />
+          </TouchableOpacity>
         ),
+        headerStyle: {
+          backgroundColor: "#F6F8FA",
+          borderBottomWidth: 0,
+          shadowColor: "transparent",
+        },
       });
   }, [navigation]);
 
@@ -70,45 +74,56 @@ export default function HomeScreen() {
     return (
       <View style={styles.centered}>
         <Image source={require("@/assets/icon.png")} style={styles.reactLogo} />
-        <ActivityIndicator size="large" color="#1D3D47" />
+        <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
   }
 
-  // Affiche la page d’accueil si connecté
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+      headerBackgroundColor={{ light: "#F6F8FA", dark: "#1D3D47" }}
       headerImage={
         <Image source={require("@/assets/icon.png")} style={styles.reactLogo} />
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Bienvenue sur FacturePro !</ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText>
-          Générez, gérez et envoyez vos factures simplement et rapidement.
+        <Ionicons name="document-text-outline" size={32} color="#007AFF" />
+        <ThemedText type="title" style={styles.titleText}>
+          Bienvenue sur FacturePro !
         </ThemedText>
       </ThemedView>
-      <ThemedView style={styles.rowButtons}>
-        {!hasEntreprise && (
-          <View style={[styles.buttonContainer, { marginRight: 8 }]}>
-            <Button
-              title="Ajouter les données d'entreprise"
-              onPress={() => router.push("/ajouter-entreprise")}
-              color="#34A853"
-            />
-          </View>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText style={styles.subtitle}>
+          Générez, gérez et envoyez vos factures simplement et rapidement.
+        </ThemedText>
+        {user && (
+          <ThemedText style={styles.userInfo}>
+            Connecté en tant que <ThemedText style={styles.userName}>{user.name}</ThemedText>
+          </ThemedText>
         )}
-        <View style={[styles.buttonContainer, { marginLeft: 8 }]}>
-          <Button
-            title="Créer une facture"
-            onPress={() => router.push("/creer-facture")}
-            color="#007AFF"
-          />
-        </View>
       </ThemedView>
+      <View style={styles.cardContainer}>
+        {!hasEntreprise && (
+          <TouchableOpacity
+            style={[styles.actionCard, { borderColor: "#34A853" }]}
+            onPress={() => router.push("/ajouter-entreprise")}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="business-outline" size={28} color="#34A853" />
+            <ThemedText style={styles.cardTitle}>
+              Ajouter les données d'entreprise
+            </ThemedText>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[styles.actionCard, { borderColor: "#007AFF" }]}
+          onPress={() => router.push("/creer-facture")}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="add-circle-outline" size={28} color="#007AFF" />
+          <ThemedText style={styles.cardTitle}>Créer une facture</ThemedText>
+        </TouchableOpacity>
+      </View>
     </ParallaxScrollView>
   );
 }
@@ -118,34 +133,85 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#A1CEDC",
+    backgroundColor: "#F6F8FA",
+  },
+  headerIcon: {
+    marginRight: 16,
+    padding: 4,
+    borderRadius: 20,
+  },
+  reactLogo: {
+    height: 110,
+    width: 110,
+    marginBottom: 24,
+    alignSelf: "center",
+    borderRadius: 24,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#E6E6E6",
   },
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    marginTop: 32,
-    marginBottom: 16,
+    gap: 10,
+    marginTop: 36,
+    marginBottom: 12,
+    justifyContent: "center",
+  },
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 26,
+    color: "#232f3e",
   },
   stepContainer: {
     gap: 8,
     marginBottom: 32,
     alignItems: "center",
   },
-  reactLogo: {
-    height: 120,
-    width: 120,
-    marginBottom: 32,
-    alignSelf: "center",
+  subtitle: {
+    fontSize: 16,
+    color: "#4B5563",
+    textAlign: "center",
+    marginBottom: 4,
   },
-  rowButtons: {
+  userInfo: {
+    fontSize: 14,
+    color: "#6B7280",
+    textAlign: "center",
+  },
+  userName: {
+    color: "#007AFF",
+    fontWeight: "bold",
+  },
+  cardContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
+    justifyContent: "center",
+    gap: 18,
     marginBottom: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
   },
-  buttonContainer: {
+  actionCard: {
     flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    paddingVertical: 28,
+    paddingHorizontal: 12,
+    marginHorizontal: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    elevation: 3,
+    shadowColor: "#007AFF",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    minWidth: 140,
+  },
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#232f3e",
+    marginTop: 10,
+    textAlign: "center",
   },
 });

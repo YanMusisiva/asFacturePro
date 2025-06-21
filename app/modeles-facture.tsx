@@ -8,6 +8,11 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Modele1 from "@/components/modelesFactures/modele1";
 import Modele2 from "@/components/modelesFactures/modele2";
 import Modele3 from "@/components/modelesFactures/modele3";
+import Modele4 from "@/components/modelesFactures/modele4";
+import Modele5 from "@/components/modelesFactures/modele5";
+import Modele6 from "@/components/modelesFactures/modele6";
+import Modele7 from "@/components/modelesFactures/modele7";
+import Modele8 from "@/components/modelesFactures/modele8";
 
 export default function ModelesFactureScreen() {
   const [entreprise, setEntreprise] = useState<any>(null);
@@ -67,6 +72,22 @@ export default function ModelesFactureScreen() {
         <TouchableOpacity onPress={() => handleSelectModele(3)}>
           <Modele3 entreprise={entreprise} facture={facture} />
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSelectModele(4)}>
+          <Modele4 entreprise={entreprise} facture={facture} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSelectModele(5)}>
+          <Modele5 entreprise={entreprise} facture={facture} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSelectModele(6)}>
+          <Modele6 entreprise={entreprise} facture={facture} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSelectModele(7)}>
+          <Modele7 entreprise={entreprise} facture={facture} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSelectModele(8)}>
+          <Modele8 entreprise={entreprise} facture={facture} />
+        </TouchableOpacity>
+       
       </ScrollView>
     </ThemedView>
   );

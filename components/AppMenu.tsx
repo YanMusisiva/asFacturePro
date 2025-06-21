@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   menu: {
-    width: width * 0.5,
+    width: width * 0.7,
     backgroundColor: "#fff",
     padding: 20,
     borderTopLeftRadius: 20,

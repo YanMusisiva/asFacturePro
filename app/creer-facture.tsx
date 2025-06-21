@@ -1,16 +1,18 @@
 import { ThemedText } from "@/components/ThemedText";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
-  Button,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 
@@ -63,7 +65,7 @@ export default function CreerFactureScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "#A1CEDC" }}
+      style={{ flex: 1, backgroundColor: "#F6F8FA" }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
     >
@@ -71,50 +73,55 @@ export default function CreerFactureScreen() {
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        <ThemedText type="title" style={styles.title}>
-          Créer une facture
-        </ThemedText>
-        <TextInput
-          style={styles.input}
-          placeholder="Nom du client"
-          value={client}
-          onChangeText={setClient}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Nom du produit"
-          value={produit}
-          onChangeText={setProduit}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Montant payé"
-          value={montant}
-          onChangeText={setMontant}
-          keyboardType="numeric"
-        />
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={currency}
-            onValueChange={setCurrency}
-            style={styles.picker}
-            itemStyle={styles.pickerItem}
-          >
-            {CURRENCIES.map((cur) => (
-              <Picker.Item
-                key={cur.value}
-                label={cur.label}
-                value={cur.value}
-              />
-            ))}
-          </Picker>
-        </View>
-        <View style={{ marginTop: 24, width: "100%" }}>
-          <Button
-            title="Enregistrer la facture"
-            onPress={handleSave}
-            color="#34A853"
+        <View style={styles.card}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="document-text-outline" size={36} color="#007AFF" />
+          </View>
+          <ThemedText type="title" style={styles.title}>
+            Créer une facture
+          </ThemedText>
+          <TextInput
+            style={styles.input}
+            placeholder="Nom du client"
+            value={client}
+            onChangeText={setClient}
+            placeholderTextColor="#94A3B8"
           />
+          <TextInput
+            style={styles.input}
+            placeholder="Nom du produit"
+            value={produit}
+            onChangeText={setProduit}
+            placeholderTextColor="#94A3B8"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Montant payé"
+            value={montant}
+            onChangeText={setMontant}
+            keyboardType="numeric"
+            placeholderTextColor="#94A3B8"
+          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={currency}
+              onValueChange={setCurrency}
+              style={styles.picker}
+              itemStyle={styles.pickerItem}
+            >
+              {CURRENCIES.map((cur) => (
+                <Picker.Item
+                  key={cur.value}
+                  label={cur.label}
+                  value={cur.value}
+                />
+              ))}
+            </Picker>
+          </View>
+          <TouchableOpacity style={styles.saveBtn} onPress={handleSave} activeOpacity={0.85}>
+            <Ionicons name="checkmark-circle-outline" size={22} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={styles.saveBtnText}>Enregistrer la facture</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -124,41 +131,90 @@ export default function CreerFactureScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#A1CEDC",
+    backgroundColor: "#F6F8FA",
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
   },
+  card: {
+    width: "100%",
+    maxWidth: 370,
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    padding: 28,
+    alignItems: "center",
+    shadowColor: "#007AFF",
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 16,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#E6E6E6",
+  },
+  iconCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#E6F0FF",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
   title: {
-    marginBottom: 32,
+    marginBottom: 24,
     textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 22,
+    color: "#232f3e",
   },
   input: {
     width: "100%",
-    maxWidth: 350,
-    height: 44,
-    borderColor: "#1D3D47",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    backgroundColor: "#fff",
+    height: 46,
+    borderColor: "#B3D6FF",
+    borderWidth: 1.5,
+    borderRadius: 10,
+    marginBottom: 14,
+    paddingHorizontal: 14,
+    backgroundColor: "#F8FAFC",
+    fontSize: 16,
+    color: "#232f3e",
   },
   pickerContainer: {
     width: "100%",
-    maxWidth: 350,
-    borderWidth: 1,
-    borderColor: "#1D3D47",
-    borderRadius: 8,
-    marginBottom: 16,
-    backgroundColor: "#fff",
+    borderWidth: 1.5,
+    borderColor: "#B3D6FF",
+    borderRadius: 10,
+    marginBottom: 14,
+    backgroundColor: "#F8FAFC",
     overflow: "hidden",
   },
   picker: {
     width: "100%",
-    height: 44,
+    height: 46,
   },
   pickerItem: {
     fontSize: 16,
+  },
+  saveBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#34A853",
+    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    marginTop: 10,
+    width: "100%",
+    justifyContent: "center",
+    shadowColor: "#34A853",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  saveBtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 17,
+    letterSpacing: 0.2,
   },
 });
