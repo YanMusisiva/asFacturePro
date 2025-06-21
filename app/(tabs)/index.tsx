@@ -89,7 +89,7 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <Ionicons name="document-text-outline" size={32} color="#007AFF" />
         <ThemedText type="title" style={styles.titleText}>
-          Bienvenue sur FacturePro !
+          Bienvenue sur As FacturePro !
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontWeight: "bold",
     fontSize: 26,
-    color: "#232f3e",
+    color: "#fff",
   },
   stepContainer: {
     gap: 8,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#4B5563",
+    color: "#ffffff",
     textAlign: "center",
     marginBottom: 4,
   },
